@@ -6,6 +6,7 @@ import link.pple.assets.domain.donation.repository.DonationRepository
 import link.pple.assets.domain.patient.service.PatientCommand
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 /**
  * @Author Heli
@@ -22,7 +23,6 @@ class DonationCommand(
 
         // TODO Patient 재활용 가능하게 수정??
         val newPatient = patientCommand.create(definition = definition.patient)
-
         val donation = Donation.create(
             title = definition.title,
             content = definition.content,
@@ -30,7 +30,6 @@ class DonationCommand(
             patient = newPatient,
             phoneNumber = definition.phoneNumber
         )
-
         return donationRepository.save(donation)
     }
 
@@ -39,4 +38,18 @@ class DonationCommand(
 
         return donationRepository.save(donation.renew())
     }
+
+    /**
+     * @Author Ko
+     */
+    fun  update(donation: Donation, dto: DonationDefinition): Donation {
+        donation?.title =  dto.title
+        donation?.content = dto.content
+        donation?.phoneNumber = dto.phoneNumber
+        donation?.bloodProduct = dto.bloodProduct
+
+        return donationRepository.save(donation)
+    }
+
+
 }

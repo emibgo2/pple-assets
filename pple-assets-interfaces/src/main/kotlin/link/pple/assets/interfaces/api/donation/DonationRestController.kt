@@ -19,7 +19,7 @@ import javax.validation.Valid
 @RestController
 class DonationRestController(
     private val donationQuery: DonationQuery,
-    private val donationCommand: DonationCommand
+    private val donationCommand: DonationCommand,
 ) {
 
     @PostMapping(
@@ -39,6 +39,26 @@ class DonationRestController(
 
         return donation.toDto()
     }
+
+    @PostMapping(
+        value = ["/donation/api/v1/donation/{donationUuid}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    @AuditingApi
+    fun updateDonation(
+        @PathVariable donationUuid: String,
+        @RequestBody @Valid dto: DonationDefinitionDto
+    ): DonationDto {
+
+        val donation = donationQuery.getByUuid(
+            donationUuid = donationUuid
+        )
+
+        val update = donationCommand.update(donation, dto.toDefinition())
+
+        return update.toDto()
+    }
+
 
     @GetMapping(
         value = ["/donation/api/v1/donation/{donationUuid}"],
